@@ -1,16 +1,23 @@
 "use client";
 import {Button, Description, FieldError, Form, Input, Label, TextField} from "@heroui/react";
+import { signUp } from "../../../lib/auth-client";
 
 const page = () => {
-const onSubmit = (e) => {
+const onSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = {};
+    const data = Object.fromEntries(formData.entries());
     // Convert FormData to plain object
-    formData.forEach((value, key) => {
-      data[key] = value.toString();
-    });
-    alert(`Form submitted with: ${JSON.stringify(data, null, 2)}`);
+    
+   console.log('data from the form', data)
+
+
+    const {data:resData,error}=await signUp.email({
+        name:data.name,
+        email:data.email,
+        password:data.password
+    })
+    console.log(resData,error)
   };
 
 
@@ -19,6 +26,12 @@ const onSubmit = (e) => {
             <h1>please sign up</h1>
 
             <Form className="flex w-96 flex-col gap-4" onSubmit={onSubmit}>
+
+ <TextField fullWidth name="name">
+        <Label>Your name</Label>
+        <Input placeholder="Enter your name " />
+      </TextField>
+
       <TextField
         isRequired
         name="email"
